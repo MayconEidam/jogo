@@ -3,18 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Perguntas e Respostas</title>
+    <title>Jogo da Cobrinha</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <div class="question" id="question">Pergunta aqui?</div>
-    <div class="options" id="options">
-        <div class="option"><input type="radio" name="answer" id="option1"><label for="option1">Opção 1</label></div>
-        <div class="option"><input type="radio" name="answer" id="option2"><label for="option2">Opção 2</label></div>
-        <div class="option"><input type="radio" name="answer" id="option3"><label for="option3">Opção 3</label></div>
-    </div>
-    <button onclick="checkAnswer()">Verificar Resposta</button>
-
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
     <script src="script.js"></script>
 </body>
 </html>

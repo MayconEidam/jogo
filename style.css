@@ -1,20 +1,13 @@
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
 }
-.question {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-.options {
-    display: inline-block;
-    text-align: left;
-}
-.option {
-    margin-bottom: 10px;
-}
-button {
-    padding: 10px 20px;
-    font-size: 18px;
-    cursor: pointer;
+
+canvas {
+    border: 1px solid #000;
 }

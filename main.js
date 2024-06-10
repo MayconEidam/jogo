@@ -1,54 +1,95 @@
-var questions = [
-    {
-        question: "Qual é a capital do Brasil?",
-        options: ["São Paulo", "Rio de Janeiro", "Brasília"],
-        answer: "Brasília"
-    },
-    {
-        question: "Quem escreveu 'Dom Quixote'?",
-        options: ["Miguel de Cervantes", "William Shakespeare", "Jorge Luis Borges"],
-        answer: "Miguel de Cervantes"
-    },
-    {
-        question: "Qual é o maior planeta do sistema solar?",
-        options: ["Júpiter", "Saturno", "Terra"],
-        answer: "Júpiter"
-    }
-];
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-var currentQuestion = 0;
-var score = 0;
+const box = 20;
+const canvasSize = 400;
+let snake = [{ x: 200, y: 200 }];
+let food = { x: 0, y: 0 };
+let dx = 0;
+let dy = 0;
+let score = 0;
 
-function loadQuestion() {
-    var q = questions[currentQuestion];
-    document.getElementById("question").innerText = q.question;
-    var optionsHTML = "";
-    for (var i = 0; i < q.options.length; i++) {
-        optionsHTML += '<div class="option"><input type="radio" name="answer" id="option' + (i+1) + '"><label for="option' + (i+1) + '">' + q.options[i] + '</label></div>';
-    }
-    document.getElementById("options").innerHTML = optionsHTML;
+function drawSnake() {
+    snake.forEach(segment => {
+        ctx.fillStyle = "green";
+        ctx.fillRect(segment.x, segment.y, box, box);
+        ctx.strokeStyle = "darkgreen";
+        ctx.strokeRect(segment.x, segment.y, box, box);
+    });
 }
 
-function checkAnswer() {
-    var selectedOption = document.querySelector('input[name="answer"]:checked');
-    if (selectedOption) {
-        if (selectedOption.nextSibling.textContent === questions[currentQuestion].answer) {
-            score++;
-        }
-        currentQuestion++;
-        if (currentQuestion < questions.length) {
-            loadQuestion();
-        } else {
-            alert("Fim do Jogo! Sua pontuação: " + score + "/" + questions.length);
-            currentQuestion = 0;
-            score = 0;
-            loadQuestion();
-        }
+function drawFood() {
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x, food.y, box, box);
+}
+
+function drawScore() {
+    ctx.fillStyle = "black";
+    ctx.font = "20px Arial";
+    ctx.fillText("Pontuação: " + score, 10, 30);
+}
+
+function generateFood() {
+    food.x = Math.floor(Math.random() * (canvasSize / box)) * box;
+    food.y = Math.floor(Math.random() * (canvasSize / box)) * box;
+}
+
+function moveSnake() {
+    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y) {
+        score++;
+        generateFood();
     } else {
-        alert("Por favor, selecione uma opção.");
+        snake.pop();
     }
 }
 
-window.onload = function() {
-    loadQuestion();
-};
+function checkCollision() {
+    if (snake[0].x < 0 || snake[0].x >= canvasSize || snake[0].y < 0 || snake[0].y >= canvasSize) {
+        return true;
+    }
+    for (let i = 1; i < snake.length; i++) {
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function gameOver() {
+    clearInterval(game);
+    alert("Fim de jogo! Sua pontuação: " + score);
+    document.location.reload();
+}
+
+document.addEventListener("keydown", event => {
+    const keyPressed = event.key;
+    if (keyPressed === "ArrowLeft" && dx !== box) {
+        dx = -box;
+        dy = 0;
+    } else if (keyPressed === "ArrowRight" && dx !== -box) {
+        dx = box;
+        dy = 0;
+    } else if (keyPressed === "ArrowUp" && dy !== box) {
+        dx = 0;
+        dy = -box;
+    } else if (keyPressed === "ArrowDown" && dy !== -box) {
+        dx = 0;
+        dy = box;
+    }
+});
+
+function gameLoop() {
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+    drawSnake();
+    drawFood();
+    drawScore();
+    moveSnake();
+    if (checkCollision()) {
+        gameOver();
+    }
+}
+
+generateFood();
+let game = setInterval(gameLoop, 100);
